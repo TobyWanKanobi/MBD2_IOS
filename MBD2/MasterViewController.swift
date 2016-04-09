@@ -17,6 +17,41 @@ class MasterViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
+        
+        // Haal het singleton session object op
+        let session = NSURLSession.sharedSession()
+        
+        // Creëer een URL object op basis van een string
+        let url = NSURL(string: "https://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=200&primary_release_date.lte=1994-09-09&api_key=4208b9910e5a2490a32d97c4a0df79a7")
+        
+        // Definieer een task voor de URL session om een GET request te doen.
+        // Die krijgt een closure mee in de vorm van een completion handler.
+        
+        // De data zal asynchroon geladen worden, en de completion handler wordt aangeroepen
+        // zodra de data binnen is. Binnen deze closure verwijzen we naar een instantievariabele,
+        // dus moet er 'self' voorgezet worden om deze vanuit de closure te kunnen bereiken.
+        
+        // We willen de user interface aanpassen: de text view krijgt de data. Maar:
+        // dat mag alleen in de main thread, terwijl de completion handler in een aparte thread
+        // wordt aangroepen. Daarom wordt het statement dat de text view aanpast op
+        // de main thread gezet, via de functie dispatch_async(), die als queue de main queue krijgt.
+        let task = session.dataTaskWithURL(url!, completionHandler: {(data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
+            if let theData = data {
+                dispatch_async(dispatch_get_main_queue(), {
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    NSLog(NSString(data: theData, encoding: NSUTF8StringEncoding) as! String)
+                })
+            }
+        })
+        
+        // We moeten de taak nog wel starten!
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        task.resume()
+        
+        
         // Do any additional setup after loading the view, typically from a nib.
         self.navigationItem.leftBarButtonItem = self.editButtonItem()
 
