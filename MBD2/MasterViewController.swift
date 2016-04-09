@@ -12,7 +12,8 @@ class MasterViewController: UITableViewController {
 
     var detailViewController: DetailViewController? = nil
     var objects = [AnyObject]()
-
+    
+    var textArray = ["hoi1", "hoi2", "hoi3"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,14 +65,16 @@ class MasterViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return objects.count
+        return textArray.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
 
-        let object = objects[indexPath.row] as! NSDate
-        cell.textLabel!.text = object.description
+        //let object = objects[indexPath.row] as! NSDate
+        //cell.textLabel!.text = object.description
+        
+        cell.textLabel!.text = textArray[indexPath.row]
         return cell
     }
 
